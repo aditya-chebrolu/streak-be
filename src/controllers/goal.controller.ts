@@ -20,16 +20,8 @@ export class GoalController {
       const goals = await this.goalDAO.getAllGoals();
       return goals;
     } catch (e) {
-      console.log('>', e);
       return e.message;
     }
-  }
-
-  @Get('date')
-  getDateFxn(@Body() { date }: { date: Date }) {
-    const serverDate = new Date().getDate();
-    const clientDate = new Date(date).getDate();
-    return { serverDate, clientDate };
   }
 
   @Post()
@@ -48,15 +40,6 @@ export class GoalController {
       return await this.goalDAO.updateGoalStreak(data);
     } catch (e) {
       return e || e.message || false;
-    }
-  }
-
-  @Post('day')
-  async addDay(@Body() data: { goalId: string; date: Date }) {
-    try {
-      return this.dayDAO.createDay(data);
-    } catch (e) {
-      return e.message;
     }
   }
 }
