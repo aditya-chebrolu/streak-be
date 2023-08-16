@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { GoalEntity, GoalSchema } from './goal/schemas/goal.schema';
+import { GoalEntity, GoalSchema } from './goal/goal.schema';
 import { GoalDAO } from './goal/goal.dao';
 import { DayEntity, DaySchema } from './day/day.schema';
+import { DayDAO } from './day/day.dao';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { DayEntity, DaySchema } from './day/day.schema';
       { name: DayEntity.name, schema: DaySchema },
     ]),
   ],
-  providers: [GoalDAO],
-  exports: [GoalDAO],
+  providers: [GoalDAO, DayDAO],
+  exports: [GoalDAO, DayDAO],
 })
 export class RepositoryModule {}

@@ -1,13 +1,18 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { DayDAO } from 'src/repository/day/day.dao';
 import {
   CheckInRequestBody,
   CreateGoalRequestBody,
-} from 'src/repository/goal/dtos/goal.dto';
+} from 'src/repository/goal/goal.dto';
 import { GoalDAO } from 'src/repository/goal/goal.dao';
+import { isSameDay } from 'date-fns';
 
 @Controller('goals')
 export class GoalController {
-  constructor(private readonly goalDAO: GoalDAO) {}
+  constructor(
+    private readonly goalDAO: GoalDAO,
+    private readonly dayDAO: DayDAO,
+  ) {}
 
   @Get()
   async getGoals() {
@@ -16,7 +21,7 @@ export class GoalController {
       return goals;
     } catch (e) {
       console.log('>', e);
-      return e;
+      return e.message;
     }
   }
 
@@ -39,14 +44,19 @@ export class GoalController {
   @Post('check-in')
   async checkIn(@Body() data: CheckInRequestBody) {
     try {
-      const serverCurrentDate = new Date().getDate();
-      const clientCurrentDate = new Date(data.currentDate).getDate();
-      if (serverCurrentDate !== clientCurrentDate)
-        throw 'Invalid check in date';
+      if (!isSameDay(new Date(), new Date(data.date))) throw 'Invalid Date';
       return await this.goalDAO.updateGoalStreak(data);
     } catch (e) {
-      console.log(e);
       return e || e.message || false;
+    }
+  }
+
+  @Post('day')
+  async addDay(@Body() data: { goalId: string; date: Date }) {
+    try {
+      return this.dayDAO.createDay(data);
+    } catch (e) {
+      return e.message;
     }
   }
 }

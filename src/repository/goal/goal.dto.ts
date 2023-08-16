@@ -7,13 +7,17 @@ import {
   IsString,
 } from 'class-validator';
 
-export interface Goal {
+export type Goal = {
   name: string;
   startDate: Date;
   endDate: Date;
-  // totalDays: number;
-  tasks?: { id: number; title: string }[];
-}
+};
+
+export type Day = {
+  date: Date;
+};
+
+export type GoalResponse = Goal & { days: Day[] };
 
 export class CreateGoalRequestBody {
   @IsNotEmpty()
@@ -34,12 +38,12 @@ export class CreateGoalRequestBody {
 export class CheckInRequestBody {
   @IsNotEmpty()
   @IsDate()
-  currentDate!: Date;
+  date!: Date;
   @IsNotEmpty()
   @IsString()
   goalId!: string;
-  @IsArray()
-  @IsNumber()
-  @IsOptional()
-  completedTaskIds?: number[];
+  // @IsArray()
+  // @IsNumber()
+  // @IsOptional()
+  // completedTaskIds?: number[];
 }
